@@ -1,0 +1,14 @@
+  {
+    "name": "Chrome Stats",
+    "version": "1.0",
+    "description": "Stats on your current browsing session",
+    "permissions": ["activeTab", "storage"],
+    "background": {
+        "scripts": ["background.js"],
+        "persistent": false
+    },
+    "browser_action": {
+        "default_popup": "popup.html"
+      },
+    "manifest_version": 2
+  }
