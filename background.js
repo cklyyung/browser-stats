@@ -7,6 +7,6 @@ chrome.windows.onCreated.addListener(function() {
 function storeCurrentTime() {
     var currentTime = new Date();
     chrome.storage.local.set({startTime: currentTime.getTime()}, function() {
-    console.log("Saved session start time of " + currentTime);
+        console.log("Saved session start time of " + currentTime);
     });
 }
