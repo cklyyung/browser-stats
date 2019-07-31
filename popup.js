@@ -1,10 +1,16 @@
 let counter = document.getElementById('counter');
 var savedTime;
-chrome.storage.local.get(['startTime'], function(data) {
-    savedTime = new Date(parseInt(data.startTime));
-    console.log("Fetched start time of " + savedTime);
-    startTimer();
+
+chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+    var windowId = tabs[0].windowId;
+    console.log(windowId);
+    chrome.storage.local.get(['startTime' + windowId], function(data) {
+        savedTime = new Date(parseInt(data['startTime' + windowId]));
+        console.log("Fetched start time of " + savedTime);
+        startTimer();
+    });
 });
+
 
 function startTimer() {
     timeElapsed = calculateTimeElapsed(savedTime)
