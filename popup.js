@@ -4,9 +4,9 @@ var savedTime;
 chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
     var windowId = tabs[0].windowId;
     console.log(windowId);
-    chrome.storage.local.get(['startTime' + windowId], function(data) {
-        savedTime = new Date(parseInt(data['startTime' + windowId]));
-        console.log("Fetched start time of " + savedTime);
+    chrome.storage.local.get([`startTime${windowId}`], function(data) {
+        savedTime = new Date(parseInt(data[`startTime${windowId}`]));
+        console.log(`Fetched start time of ${savedTime}`);
         startTimer();
     });
 });
@@ -28,7 +28,7 @@ function updateCounter(timeElapsed) {
     var hours = ~~(timeElapsed / (60 * 60));
     var minutes = ~~(timeElapsed / 60);
     var seconds = ~~(timeElapsed % 60);
-    counter.innerHTML = format(hours) + ":" + format(minutes) + ":" + format(seconds);
+    counter.innerHTML = `${format(hours)}:${format(minutes)}:${format(seconds)}`;
 }
 
 function format(num) {

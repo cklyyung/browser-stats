@@ -5,7 +5,7 @@ chrome.windows.onCreated.addListener(function(window) {
 });
 
 chrome.windows.onRemoved.addListener(function(window) {
-    chrome.storage.local.remove(['startTime' + window.id],function(){
+    chrome.storage.local.remove([`startTime${window.id}`],function(){
         var error = chrome.runtime.lastError;
            if (error) {
                console.error(error);
@@ -21,7 +21,7 @@ chrome.runtime.onInstalled.addListener(function() {
 
 function storeCurrentTime(windowId) {
     var currentTime = new Date();
-    chrome.storage.local.set({['startTime' + windowId]: currentTime.getTime()}, function() {
-        console.log("Saved session start time of " + currentTime + " to window " + windowId);
+    chrome.storage.local.set({[`startTime${windowId}`]: currentTime.getTime()}, function() {
+        console.log(`Saved session start time of ${currentTime} to window ${windowId}`);
     });
 }
