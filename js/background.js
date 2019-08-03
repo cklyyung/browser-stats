@@ -1,34 +1,28 @@
 'use strict';
 
-chrome.windows.onCreated.addListener(function(window) {
-    storeCurrentTime(window.id);
+chrome.windows.onCreated.addListener(function() {
+    storeNewSession()
 });
 
 chrome.tabs.onCreated.addListener(function(tab) {
     incrementTabCount(tab.windowId);
 })
 
-chrome.windows.onRemoved.addListener(function(window) {
-    chrome.storage.local.remove([`startTime${window.id}`],function(){
-        var error = chrome.runtime.lastError;
-           if (error) {
-               console.error(error);
-           }
-       });
-    chrome.storage.local.remove([`tabs${window.id}`],function(){
-        var error = chrome.runtime.lastError;
-           if (error) {
-               console.error(error);
-           }
-       });
+chrome.windows.onRemoved.addListener(function(windowId) {
+    removeKey(`startTime${windowId}`);
+    removeKey(`tabs${windowId}`);
 })
 
 chrome.runtime.onInstalled.addListener(function() {
+    storeNewSession();
+});
+
+function storeNewSession() {
     chrome.tabs.query({currentWindow: true}, function(tabs) {
         storeCurrentTime(tabs[0].windowId);
         storeTabCount(tabs[0].windowId, tabs.length);
     });
-});
+}
 
 function storeCurrentTime(windowId) {
     var currentTime = new Date();
@@ -50,4 +44,14 @@ function storeTabCount(windowId, tab_count) {
     chrome.storage.local.set({[`tabs${windowId}`]: tab_count}, function() {
         console.log(`Stored tab count ${tab_count} to window ${windowId}`);
     });
+}
+
+function removeKey(key) {
+    console.log(`Removing ${key}`)
+    chrome.storage.local.remove([key],function(){
+        var error = chrome.runtime.lastError;
+           if (error) {
+               console.error(error);
+           }
+       });
 }
