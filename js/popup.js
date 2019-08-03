@@ -1,5 +1,5 @@
-let sessionTimer = document.getElementById('session_timer');
-let tabCounter = document.getElementById('tab_counter');
+let sessionTimer = document.getElementById("session_timer");
+let tabCounter = document.getElementById("tab_counter");
 var savedTime;
 
 chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
