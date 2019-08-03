@@ -24,9 +24,9 @@ chrome.windows.onRemoved.addListener(function(window) {
 })
 
 chrome.runtime.onInstalled.addListener(function() {
-    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+    chrome.tabs.query({currentWindow: true}, function(tabs) {
         storeCurrentTime(tabs[0].windowId);
-        incrementTabCount(tabs[0].windowId);
+        storeTabCount(tabs[0].windowId, tabs.length);
     });
 });
 
