@@ -4,8 +4,6 @@ const TOTAL_SESSIONS = "totalSessions";
 const TOTAL_SESSION_TIME = "totalSessionTime";
 const TOTAL_TABS = "totalTabsOpen";
 
-const sessionStartTime = (new Date()).getTime();
-
 chrome.windows.onCreated.addListener(function() {
     storeNewSession()
 });
@@ -20,16 +18,27 @@ chrome.windows.onRemoved.addListener(function(windowId) {
 })
 
 chrome.runtime.onInstalled.addListener(function() {
+    storeNewStats();
     storeNewSession();
 });
 
+function storeNewStats() {
+    storeKey(TOTAL_SESSIONS, 0);
+    storeKey(TOTAL_SESSION_TIME, 0);
+    storeKey(TOTAL_TABS, 0);
+}
+
+
 function storeStats(windowId) {
-    chrome.storage.local.get([`tabs${windowId}`], function(data) {
+    incrementKeyByValue(TOTAL_SESSIONS, 1);
+    chrome.storage.local.get([`startTime${windowId}`], function(data) {
+        var sessionStartTime = new Date(parseInt(data[`startTime${windowId}`]))
         var sessionTime = (new Date()).getTime() - sessionStartTime
-        incrementKeyByValue(TOTAL_SESSIONS, 1);
         incrementKeyByValue(TOTAL_SESSION_TIME, sessionTime);
-        incrementKeyByValue(TOTAL_TABS, data[`tabs${windowId}`])
         removeKey(`startTime${windowId}`);
+    });
+    chrome.storage.local.get([`tabs${windowId}`], function(data) {
+        incrementKeyByValue(TOTAL_TABS, data[`tabs${windowId}`])
         removeKey(`tabs${windowId}`);
     });
 }
@@ -37,6 +46,7 @@ function storeStats(windowId) {
 function storeNewSession() {
     chrome.tabs.query({currentWindow: true}, function(tabs) {
         console.log(`New session with windowId ${tabs[0].windowId}`);
+        var sessionStartTime = (new Date()).getTime();
         storeKey(`startTime${tabs[0].windowId}`, sessionStartTime);
         storeKey(`tabs${tabs[0].windowId}`, tabs.length);
     });
